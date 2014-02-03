@@ -1,20 +1,21 @@
 <?php
     if (!cmsms()) exit;
 
-    /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    /** @var Smarty_CMS $smarty */
 
-       Code for Twitter "default" action
 
-       -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    $caching = $smarty->caching;
+    $smarty->caching = true;
 
-       Typically, this will display something from a template
-       or do some other task.
+    $global_lifetime = $smarty->cache_lifetime;
+    $smarty->setCacheLifetime(900); // 15 mins for tweets
 
-    */
-
-    $cache_id = 'twitter_default_' . md5(serialize($params));
+    $cache_id = '|' . $this->GetName() . '_twitter_default_' . md5(serialize($params));
     $compile_id = '';
     $template_resource = $this->getTemplateResource('timeline', $params);
+
+
+
 
     if(!$smarty->isCached($template_resource,$cache_id,$compile_id))
     {
@@ -37,4 +38,10 @@
         $this->smarty->assign('timeline', $timeline);
     }
 
+
+
     echo $smarty->fetch($template_resource,$cache_id,$compile_id);
+
+
+    $smarty->caching = $caching;
+    $smarty->setCacheLifetime($global_lifetime);

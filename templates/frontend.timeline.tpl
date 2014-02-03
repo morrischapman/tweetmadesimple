@@ -1,3 +1,4 @@
+{$now}
 {if isset($timeline)}
     {foreach from=$timeline item=tweet}
         <div id="status_{$tweet->id}" style="border-bottom: 1px dashed gray;">
