@@ -377,6 +377,7 @@
          * @param $params Parameters for the query
          *
          * @return simplexml
+         * @deprecated
          */
         public static function doSearch($query, $params = array())
         {
@@ -392,9 +393,12 @@
             return simplexml_load_string(Tweet::getCurl($url, NULL, $params, 'GET'));
         }
 
+        /**
+         * @deprecated
+         */
         public static function doJsonSearch($query, $params = array())
         {
-            $url = 'http://search.twitter.com/search.json';
+            $url = 'https://api.twitter.com/1.1/search/tweets.json';
 
             if (strpos($query, 'OR') !== false) {
                 $query         = str_replace('OR', ' ', str_replace(' ', '', $query));

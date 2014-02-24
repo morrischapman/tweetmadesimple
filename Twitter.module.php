@@ -59,7 +59,7 @@ class Twitter extends CMSModule
 
     function GetVersion()
     {
-        return '2.0.3';
+        return '2.0.4';
     }
 
     function GetHelp()
@@ -131,6 +131,7 @@ class Twitter extends CMSModule
         $this->SetParameterType('template', CLEAN_STRING);
         $this->SetParameterType('detailpage', CLEAN_STRING);
         $this->SetParameterType('limit', CLEAN_INT);
+        $this->SetParameterType('query', CLEAN_STRING);
     }
 
     public function GetDependencies()
@@ -255,6 +256,12 @@ class Twitter extends CMSModule
         $connection = $this->getConnection();
 
         return $connection->get('/statuses/user_timeline', $tparams);
+    }
+
+    public function doSearch($params = array())
+    {
+        $connection = $this->getConnection();
+        return $connection->get('/search/tweets', $params);
     }
 
     public function updateStatus($message, $shorten = true)
