@@ -1,7 +1,5 @@
 <?php
-if (!isset($gCms)) {
-    exit;
-}
+if (!cmsms()) { exit; }
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
@@ -17,14 +15,23 @@ if (!isset($gCms)) {
 
 if (isset($params['query'])) {
     $search_params = array(
-        'q' => $params['query']
+        'q' => $params['query'],
+        'result_type' => 'mixed'
     );
 
     if (isset($params['limit'])) {
         $search_params['count'] = (int)$params['limit'];
     }
+    else
+    {
+        $search_params['count'] = 100;
+    }
 
     $results = $this->doSearch($search_params);
+
+//    var_dump($results);
+
+    var_dump(count($results->statuses));
 
     $timeline = Tweet::parseTimeline($results->statuses);
 

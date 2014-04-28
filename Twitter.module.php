@@ -38,6 +38,9 @@
 # - Chat with developers on the #cms IRC channel
 #-------------------------------------------------------------------------
 
+require_once(__DIR__  . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php');
+require_once(__DIR__  . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'abraham' . DIRECTORY_SEPARATOR . 'twitteroauth' . DIRECTORY_SEPARATOR . 'twitteroauth' .  DIRECTORY_SEPARATOR . 'twitteroauth.php');
+
 class Twitter extends CMSModule
 {
     const CONSUMER_KEY = '0stQXgmu4dyd6Ky3CD2tw'; // TweetMadeSimple Consumer Key
@@ -186,11 +189,13 @@ class Twitter extends CMSModule
         if (($token = $this->GetPreference('oauth_token')) && ($token_secret = $this->GetPreference('oauth_token_secret'))) {
             $connection = new TwitterOAuth(Twitter::CONSUMER_KEY, Twitter::CONSUMER_SECRET, $token, $token_secret);
             $connection->useragent = self::USER_AGENT;
+            $connection->host = "https://api.twitter.com/1.1/";
 
             return $connection;
         } else {
             $connection = new TwitterOAuth(self::CONSUMER_KEY, self::CONSUMER_SECRET);
             $connection->useragent = self::USER_AGENT;
+            $connection->host = "https://api.twitter.com/1.1/";
 
             return $connection;
         }
@@ -260,6 +265,7 @@ class Twitter extends CMSModule
 
     public function doSearch($params = array())
     {
+        var_dump($params);
         $connection = $this->getConnection();
         return $connection->get('/search/tweets', $params);
     }
@@ -310,23 +316,23 @@ class Twitter extends CMSModule
 
 
     /**
-     * @param $params   The params given for the action
-     * @param $returnid The global returnid
+     * @param $params array The params given for the action
+     * @param $returnid integer The global returnid
+     * @return integer
      */
 
-    public function getDetailPage($params, $returnid)
+    public function getDetailPage(Array $params, $returnid)
     {
         if (isset($params['detailpage'])) {
             $manager = cmsms()->GetHierarchyManager();
-
             if ($node = $manager->sureGetNodeByAlias($params['detailpage'])) {
-                $returnid = $node->getID();
+                return (int) $node->getID();
             } elseif ($node = $manager->sureGetNodeById($params['detailpage'])) {
-                $returnid = $node->getID();
+                return (int) $node->getID();
             }
         }
 
-        return $returnid;
+        return null;
     }
 
     /**
